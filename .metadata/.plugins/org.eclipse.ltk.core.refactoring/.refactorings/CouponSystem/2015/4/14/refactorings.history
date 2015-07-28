@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename compilation unit &apos;com.CouponSys.Facade.CompanyFacade.java&apos; to &apos;AdminFacade.java&apos;&#x0A;- Original project: &apos;CouponSystem&apos;&#x0A;- Original element: &apos;com.CouponSys.Facade.CompanyFacade.java&apos;&#x0A;- Renamed element: &apos;com.CouponSys.Facade.AdminFacade.java&apos;" description="Rename compilation unit &apos;CompanyFacade.java&apos;" flags="2" id="org.eclipse.jdt.ui.rename.compilationunit" input="/src&lt;com.CouponSys.Facade{CompanyFacade.java" name="AdminFacade.java" references="false" stamp="1428144961183" version="1.0"/>
+</session>
