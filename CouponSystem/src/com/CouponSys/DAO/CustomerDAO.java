@@ -36,9 +36,6 @@ public interface CustomerDAO
 	public Customer login(String custEmail, String password) throws SQLException;
 
 	//purchase coupon by objects.
-	public void purchaseCoupon(Customer customer, Coupon coupon, int amount) throws SQLException;
-	
-	//purchase coupon by values.
 	public void purchaseCoupon(long cust_id, long coup_id, int amount, double purchasePrice) throws SQLException;
 
 

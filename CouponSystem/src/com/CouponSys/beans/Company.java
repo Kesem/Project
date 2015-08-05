@@ -9,7 +9,6 @@ public class Company extends CommonDetails
 	
 	
 	// Variables....
-	// asdasdasd
 
 	private Collection<Coupon> coupons = new HashSet<>();
 

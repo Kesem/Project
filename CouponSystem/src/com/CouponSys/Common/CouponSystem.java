@@ -1,5 +1,6 @@
 package com.CouponSys.Common;
 
+import java.sql.SQLException;
 import java.util.*;
 
 import DailyCouponExpirationTask.DailyCouponExpirationTask;
@@ -57,7 +58,7 @@ public class CouponSystem
 			return null;
 		}
 		
-		public synchronized CustomerFacade CusotmerLogin(String email, String password) throws CouponSystemExceptions
+		public synchronized CustomerFacade CusotmerLogin(String email, String password) throws CouponSysExceptions
 		{
 			try {
 				if (customerDAO.login(email, password) != null)
@@ -67,12 +68,12 @@ public class CouponSystem
 					return tempCustomerFacade;
 				}
 			} catch (SQLException e) {
-				throw new CouponSystemExceptions("Customer does not exist", e.getErrorCode());
+				throw new CouponSysExceptions("Customer does not exist", e.getErrorCode());
 			}
 			return null;
 		}
 		
-		public synchronized CompanyFacade CompanyLogin(String email, String password) throws CouponSystemExceptions
+		public synchronized CompanyFacade CompanyLogin(String email, String password) throws CouponSysExceptions
 		{
 			try {
 				if (companyDAO.login(email, password) != null)
@@ -82,7 +83,7 @@ public class CouponSystem
 					return tempCompanyFacade;
 				}
 			} catch (SQLException e) {
-				throw new CouponSystemExceptions("Company does not exist", e.getErrorCode());
+				throw new CouponSysExceptions("Company does not exist", e.getErrorCode());
 			}
 			return null;
 		}

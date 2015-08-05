@@ -1,13 +1,19 @@
 package com.CouponSys.DBDAO;
 
+import com.CouponSys.Common.CouponSysExceptions;
 import com.CouponSys.DAO.CompanyDAO;
 import com.CouponSys.beans.Company;
 import com.CouponSys.beans.Coupon;
+import com.CouponSys.beans.CouponType;
 
 import connectionPool.DB_Executer;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 public class CompanyDBDAO implements CompanyDAO
 {
@@ -28,7 +34,7 @@ public class CompanyDBDAO implements CompanyDAO
 			PreparedStatement stmt = con.prepareStatement(newcompSQL);
 
 			stmt.setLong(1, compName.getID());
-			stmt.setString(2, compName.getCompName());
+			stmt.setString(2, compName.getName());
 			stmt.setString(3, compName.getPassword());
 			stmt.setString(4, compName.getEmail());
 
@@ -80,7 +86,7 @@ public class CompanyDBDAO implements CompanyDAO
 			PreparedStatement stmt1 = con.prepareStatement(newcompname);
 
 			stmt1.setLong(2, compName.getID());
-			stmt1.setString(1, compName.getCompName());
+			stmt1.setString(1, compName.getName());
 			stmt1.setString(3, compName.getPassword());
 			stmt1.setString(4, compName.getEmail());
 
@@ -96,7 +102,7 @@ public class CompanyDBDAO implements CompanyDAO
 
 	}
 
-	@Override
+	
 	public void getCompanyID(Company compName)
 	{
 		{
@@ -107,7 +113,7 @@ public class CompanyDBDAO implements CompanyDAO
 
 				String getcompidSQL = "SELECT ID FROM `CouponSys`.`Company` WHERE comp_name = ? ";
 				PreparedStatement stmt = con.prepareStatement(getcompidSQL);
-				stmt.setString(1, compName.getCompName());
+				stmt.setString(1, compName.getName());
 
 				ResultSet rs = stmt.executeQuery(getcompidSQL);
 				ResultSetMetaData md = rs.getMetaData();
@@ -133,7 +139,7 @@ public class CompanyDBDAO implements CompanyDAO
 
 	}
 
-	@Override
+	
 	public Map<Long, Coupon> getAllCompanys()
 	{
 
@@ -170,7 +176,7 @@ public class CompanyDBDAO implements CompanyDAO
 		return null;
 	}
 
-	@Override
+	
 	public void getCoupons(Company compID)
 	{
 		{
@@ -208,15 +214,25 @@ public class CompanyDBDAO implements CompanyDAO
 
 	}
 
-	// TODO
+	
 	@Override
-	public boolean login(String compName, String password)
+	public Company login(String email, String password) throws SQLException
 	{
-
-		return false;
+		Connection con	= DB_Executer.getConnection(); //getting a connection
+		Statement stmt = con.createStatement(); //create a statement 
+		ResultSet rs = stmt.executeQuery("select * from customer");
+		while (rs.next())
+		{
+			if (email.equals(rs.getString("EMAIL")) && password.equals(rs.getString("PASSWORD")))
+			{
+				return getCompany(rs.getLong("ID"));
+			}
+		}
+		DB_Executer.returnConnection(con); //this function sending the connection back to connectionPool
+		return null;
 	}
 
-	@Override
+	
 	public void addCoupon(Coupon Coupon)
 	{
 		try
@@ -243,7 +259,7 @@ public class CompanyDBDAO implements CompanyDAO
 
 	}
 
-	@Override
+	
 	public void removeCoupon(Coupon Coupon)
 	{
 		try
@@ -268,7 +284,7 @@ public class CompanyDBDAO implements CompanyDAO
 
 	
 
-	@Override
+	
 	public void getCompanyInfo(Company compName) throws SQLException
 	{
 			try
@@ -279,7 +295,7 @@ public class CompanyDBDAO implements CompanyDAO
 		
 		String getcompidSQL = "SELECT * FROM `CouponSys`.`Company` WHERE comp_name = ? ";
 		PreparedStatement stmt = con.prepareStatement(getcompidSQL);
-		stmt.setString(1, compName.getCompName());
+		stmt.setString(1, compName.getName());
 
 		ResultSet rs = stmt.executeQuery(getcompidSQL);
 		ResultSetMetaData md = rs.getMetaData();
@@ -301,6 +317,89 @@ public class CompanyDBDAO implements CompanyDAO
 
 	}
 		
+	}
+
+	@Override
+	public void removeCompany(long id) throws SQLException
+	{
+		Connection con	= DB_Executer.getConnection(); //getting a connection
+		 //no need to check if id exist in database because id variable is primary key
+		 
+		 //Delete statement in SQL
+		 PreparedStatement prepared_stmt = con.prepareStatement("DELETE FROM `company` WHERE `ID`=?");
+		 prepared_stmt.setLong(1, id);
+		 prepared_stmt.executeUpdate(); //this action sending new data to to dataBase
+		 
+		 DB_Executer.returnConnection(con); //this function sending the connection back to connectionPool
+		
+	}
+
+	@Override
+	public Company getCompany(long id) throws SQLException
+	{
+		Connection con	= DB_Executer.getConnection(); //getting a connection
+		Statement stmt = con.createStatement(); //create a statement 
+		ResultSet rs = stmt.executeQuery("select * from company");
+		
+		Company tempComp = null; //Will return null if id is no found.
+		 while (rs.next())
+		 {	 
+			 if (id == rs.getLong("ID"))
+			 {	 
+				 try {
+					tempComp = new Company(rs.getLong("ID"), rs.getString("COMP_NAME"),rs.getString("PASSWORD"),rs.getString("EMAIL"));
+				} catch (CouponSysExceptions e) {
+					System.out.println(e.getMessage());
+					e.printStackTrace();
+				}
+			 }
+		}
+		DB_Executer.returnConnection(con); //this function sending the connection back to connectionPool
+		return tempComp; 
+	}
+
+	@Override
+	public List<Coupon> companyPurchasedCoupons(long id) throws SQLException
+	{
+		Connection con	= DB_Executer.getConnection(); //getting a connection
+		Statement stmt = con.createStatement(); //create a statement 
+		ResultSet rs = stmt.executeQuery("SELECT * "
+				+ "FROM coupon_project.coupon c JOIN coupon_project.company_coupon cc "
+				+ "on cc.COUPON_ID = c.ID "
+				+ "JOIN coupon_project.customer_coupon ccc"
+				+ "on cc.COUPON_ID = ccc.COUPON_ID"
+				+ "where cc.COMP_ID=" + id); 
+		
+		List<Coupon> Coupons = new ArrayList<>(); // Initializes list of Customer's coupon Will return empty list if there is no purchase coupons.
+		while (rs.next())
+		{	 
+			Coupons.add(new Coupon(rs.getLong("c.ID"), rs.getString("c.TITLE"), rs.getDate("c.startDate"), rs.getDate("c.endDate"), 
+					rs.getInt("cc.AMOUNT"), CouponType.valueOf((String) rs.getObject("c.TYPE")), rs.getDouble("c.price"), rs.getBoolean("c.ACTIVE")));
+			
+		}
+		DB_Executer.returnConnection(con); //this function sending the connection back to connectionPool
+		return Coupons;
+	}
+
+	@Override
+	public boolean isCompanyHavePurchasedCoupons(long id) throws SQLException
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Set<Company> getAllCompanies() throws SQLException
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<Coupon> getAllCompanyCoupons(long id) throws SQLException
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

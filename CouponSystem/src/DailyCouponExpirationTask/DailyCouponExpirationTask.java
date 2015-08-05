@@ -23,7 +23,7 @@ public class DailyCouponExpirationTask extends Thread
 			{
 				
 				try {
-					couponDAO.checkIfDateExp();
+					couponDAO.markExpiredCoupons();
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

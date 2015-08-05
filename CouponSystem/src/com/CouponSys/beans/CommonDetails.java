@@ -25,7 +25,7 @@ public class CommonDetails
 	// Getters & Setters
 
 	// return ID
-	public long getId()
+	public long getID()
 	{
 		return id;
 	}

@@ -20,13 +20,13 @@ public interface CouponDAO
 	public void removeCoupon(long id) throws SQLException;
 		
 	//Updating a coupon based on the coupon constructor.
-	public void updateCoupn(Coupon coupon) throws SQLException;
+	public void updateCoupon(Coupon coupon) throws SQLException;
 		
 	//Get the coupon ID based on the coupon ID.
 	public Coupon getCoupon(long id) throws SQLException;
 	
 	//Get all set list of all the coupons. (each coupon is Unique)
-	public Set<Coupon> getAllCoupons() throws SQLException;
+	public Set<Coupon> getAllCoupons(Coupon Coupon) throws SQLException;
 	
 	//Get set list of coupons by type (enum).
 	public Set<Coupon> getCouponByType(CouponType type) throws SQLException;
@@ -58,4 +58,8 @@ public interface CouponDAO
 	//Check if coupon is Available For Purchase Or Not
 	public boolean isCouponAvailableForPurchaseByCouponID(long coupId) throws SQLException;
 	
+	// Check if coupon is expired
+	public void checkIfDateExp(Coupon coupon) throws SQLException;
+
+
 }

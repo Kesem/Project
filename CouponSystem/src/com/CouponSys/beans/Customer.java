@@ -1,15 +1,21 @@
 package com.CouponSys.beans;
+
 import java.util.*;
+
 public class Customer
 {
-	// variables 
+	// variables
 	private long id;
 	private String custName;
 	private String password;
 	private String email;
-	private Map<Long , Coupon> custCoupons = new HashMap<>();
-	
-	// Constructor 
+
+	private List<Coupon> coupons = new ArrayList<Coupon>(); // Customers can
+															// purchase one
+															// coupon multiple
+															// times
+
+	// Constructor
 	public Customer(long id, String name, String pass, String email)
 	{
 		this.id = id;
@@ -17,92 +23,83 @@ public class Customer
 		password = pass;
 		this.email = email;
 	}
-	public Customer(long id, String name, String pass, String email, Map<Long, Coupon> custCoupons)
+
+	public Customer(long id, String name, String pass, String email,
+			List<Coupon> custCoupons)
 	{
 		this.id = id;
 		custName = name;
 		password = pass;
 		this.email = email;
-		this.custCoupons = custCoupons;
+		this.coupons = custCoupons;
 	}
-	
-	// Getters 
-	
+
+	// Getters
+
 	public long getID()
 	{
 		return id;
 	}
-	
+
 	public String getCustName()
 	{
 		return custName;
 	}
-	
-	public Map<Long, Coupon> getCoupons()
+
+	public List<Coupon> getCoupons()
 	{
-		return custCoupons;
+		return coupons;
 	}
+
 	public String getPassword()
 	{
 		return password;
 	}
+
 	public String getEmail()
 	{
 		return email;
 	}
-	
-	//   Setters
-	
+
+	// Setters
+
 	public void setID(long id)
 	{
 		this.id = id;
 	}
-	
+
 	public void setCompName(String newName)
 	{
 		custName = newName;
 	}
-	
-	public void setMap(Map<Long,Coupon> coupons)
+
+	public void setMap(List<Coupon> coupons)
 	{
-		this.custCoupons = coupons;
+		this.coupons = coupons;
 	}
-	
+
 	public void setPass(String pass)
 	{
 		this.password = pass;
 	}
-	
-	
-	public void addCoupon(Map<Long,Coupon> coupon)
+
+	public void addCoupon(List<Coupon> coupon)
 	{
-		this.custCoupons.entrySet();
-		
+		this.coupons = coupon;
+
 	}
-	
-	
+
 	@Override
 	public String toString()
 	{
-	return "("+id+")" + custName + "Have this coupons: " + custCoupons.keySet();
+		return "id=" + id + " Name=" + custName + ", password=" + password
+				+ ", email=" + email + ".";
 	}
-	
-	public void showAllCoupons()
+
+	public void setCoupons(List<Coupon> allPurchasedCouponsByCustID)
 	{
-		for (Coupon c:custCoupons.values())
-		{
-			System.out.println(c);
-		}
+		this.coupons = coupons;
+		
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 }
